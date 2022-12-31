@@ -143,7 +143,6 @@ router.put('/:postId', async (req, res) => {
       .catch(() => res.status(401).json({ errorMessage: '게시글이 정상적으로 수정되지 않았습니다.' }));
     return true;
   } catch (e) {
-    console.log(e);
     return res.status(400).json({ errorMessage: '게시글 수정에 실패하였습니다.' });
   }
 });

@@ -91,7 +91,6 @@ router.post('/', async (req, res) => {
     });
     return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
   } catch (e) {
-    console.log(e);
     return res.status(412).json({ errorMessage: '요청한 데이터 형식이 올바르지 않습니다.' });
   }
 });

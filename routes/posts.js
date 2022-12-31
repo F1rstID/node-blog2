@@ -170,3 +170,5 @@ router.delete('/:postId', async (req, res) => {
 });
 
 module.exports = router;
+
+// 게시글 없어도 삭제가 계속됨.

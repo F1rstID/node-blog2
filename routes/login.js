@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
       return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.(비밀번호 완성시 이것 지울것)' });
     }
 
-    const token = jwt.sign({ userId: user.userId }, process.env.JWTSECRETKEY, { expiresIn: '30s' });
+    const token = jwt.sign({ userId: user.userId }, process.env.JWTSECRETKEY, { expiresIn: '300s' });
 
     res.cookie('Authorization', `Bearer ${token}`);
     return res.status(201).json({ token });

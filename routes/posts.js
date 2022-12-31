@@ -112,7 +112,7 @@ router.put('/:postId', async (req, res) => {
     const { postId } = req.params;
     const { title, content } = req.body;
     const { Authorization } = req.cookies;
-    const post = Post.findOne({ where: postId });
+    const post = await Post.findOne({ where: { postId: Number(postId) } });
 
     if (!req.body) {
       return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
@@ -129,7 +129,7 @@ router.put('/:postId', async (req, res) => {
     if (!validateToken(Authorization)) {
       return res.status(403).json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
     }
-    if (getTokenPayload !== post.userId) {
+    if (getTokenPayload(Authorization) !== post.userId) {
       return res.status(401).json({ errorMessage: '게시글이 정상적으로 수정되지 않았습니다.' });
     }
     Post.update(
@@ -141,10 +141,11 @@ router.put('/:postId', async (req, res) => {
       },
     ).then(() => res.status(200).json({ message: '게시글을 수정하였습니다.' }))
       .catch(() => res.status(401).json({ errorMessage: '게시글이 정상적으로 수정되지 않았습니다.' }));
-  } catch {
+    return true;
+  } catch (e) {
+    console.log(e);
     return res.status(400).json({ errorMessage: '게시글 수정에 실패하였습니다.' });
   }
-  return res.status(777).send('도대체 어떻게 온거야.');
 });
 // 게시글 삭제
 // eslint-disable-next-line consistent-return
@@ -152,7 +153,7 @@ router.delete('/:postId', async (req, res) => {
   try {
     const { postId } = req.params;
     const { Authorization } = req.cookies;
-    const post = Post.findOne({ where: postId });
+    const post = await Post.findOne({ where: { postId: Number(postId) } });
     if (!post || !postId) {
       return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
     }
@@ -165,13 +166,14 @@ router.delete('/:postId', async (req, res) => {
     if (!validateToken(Authorization)) {
       return res.status(403).json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
     }
-    if (getTokenPayload !== post.userId) {
+    if (getTokenPayload(Authorization) !== post.userId) {
       return res.status(401).json({ errorMessage: '게시글이 정상적으로 삭제되지 않았습니다.' });
     }
     Post.destroy({
       where: { postId },
     }).then(() => res.status(200).json({ Message: '게시글을 삭제하였습니다.' }))
       .catch(() => res.status(401).json({ errorMessage: '게시글이 정상적으로 삭제되지 않았습니다.' }));
+    return true;
   } catch {
     return res.status(400).json({ errorMessage: '게시글 삭제에 실패하였습니다.' });
   }

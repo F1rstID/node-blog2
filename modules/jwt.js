@@ -5,6 +5,7 @@ function createJWT(payload, secretKey, expiresTime) {
 }
 
 function verifyJWT(token, secretKey) {
+  // console.log(token, secretKey);
   try {
     jwt.verify(token.split(' ')[1], secretKey);
     return true;
@@ -17,7 +18,7 @@ function decodeJWT(token, secretKey) {
   try {
     const payload = jwt.decode(token.split(' ')[1], secretKey);
     return payload.userId;
-  } catch {
+  } catch (e) {
     return false;
   }
 }

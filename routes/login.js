@@ -32,10 +32,11 @@ router.post('/', async (req, res) => {
       return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
     }
 
-    const token = createJWT(user.userId, process.env.JWTSECRETKEY, '300s');
-
+    const token = createJWT(user.userId, process.env.JWTSECRETKEY, '10s');
+    // res.setHeader('Authorization', `Bearer ${token}`);
     res.cookie('Authorization', `Bearer ${token}`);
-    return res.status(201).json({ token });
+    // res.writeHead('Authorization', `Bearer ${token}`);
+    return res.status(201).header('Authorization', token).json({ token });
   } catch (e) {
     return res.status(400).json({ errorMessage: '로그인에 실패하였습니다.' });
   }

@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 
-class Post extends Sequelize.Model {
+class Comment extends Sequelize.Model {
   static initiate(sequelize) {
-    Post.init({
-      postId: {
+    Comment.init({
+      commentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
@@ -13,19 +13,19 @@ class Post extends Sequelize.Model {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      title: {
-        type: Sequelize.STRING,
+      postId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      content: {
+      comment: {
         type: Sequelize.STRING,
         allowNull: false,
       },
     }, {
       sequelize,
       timestamps: true,
-      modelName: 'Post',
-      tableName: 'posts',
+      modelName: 'Comment',
+      tableName: 'comments',
       paranoid: false,
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',
@@ -33,10 +33,9 @@ class Post extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Post.belongsTo(db.User, { foreignKey: 'userId', targetKey: 'userId', onDelete: 'CASCADE' });
-    db.Post.hasMany(db.Comment, { foreignKey: 'postId', sourceKey: 'postId' });
-    db.Post.hasMany(db.Like, { foreignKey: 'postId', sourceKey: 'postId' });
+    db.Comment.belongsTo(db.User, { foreignKey: 'userId', targetKey: 'userId', onDelete: 'CASCADE' });
+    db.Comment.belongsTo(db.Post, { foreignKey: 'postId', targetKey: 'postId', onDelete: 'CASCADE' });
   }
 }
 
-module.exports = Post;
+module.exports = Comment;

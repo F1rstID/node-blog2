@@ -24,7 +24,7 @@ function isNickname(nickname) {
 /**
  *
  * @param {*} password 비밀번호
- * @returns 비밀번호가 최소 4글자 이상인지 검증한 결과를 Boolean으로 반환
+ * @returns 비밀번호가 4글자 이상이면 true 반환
  */
 function isPassword(password) {
   if (password.length < 3) {
@@ -33,6 +33,7 @@ function isPassword(password) {
 
   return true;
 }
+
 /**
  *
  * @param {*} password 비밀번호

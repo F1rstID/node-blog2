@@ -1,8 +1,8 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const { User } = require('../models');
+const { createJWT } = require('../modules/jwt');
 
 /**
  *
@@ -29,10 +29,10 @@ router.post('/', async (req, res) => {
     }
 
     if (!passwordVerification(password, user.password)) {
-      return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.(비밀번호 완성시 이것 지울것)' });
+      return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
     }
 
-    const token = jwt.sign({ userId: user.userId }, process.env.JWTSECRETKEY, { expiresIn: '300s' });
+    const token = createJWT(user.userId, process.env.JWTSECRETKEY, '300s');
 
     res.cookie('Authorization', `Bearer ${token}`);
     return res.status(201).json({ token });

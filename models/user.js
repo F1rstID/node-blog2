@@ -32,6 +32,8 @@ class User extends Sequelize.Model {
 
   static associate(db) {
     db.User.hasMany(db.Post, { foreignKey: 'userId', sourceKey: 'userId' });
+    db.User.hasMany(db.Comment, { foreignKey: 'userId', sourceKey: 'userId' });
+    db.User.hasMany(db.Like, { foreignKey: 'userId', sourceKey: 'userId' });
   }
 }
 

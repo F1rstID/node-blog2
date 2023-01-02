@@ -7,6 +7,9 @@ const likesRouter = require('./likes');
 
 const router = express.Router();
 router.use('/login', loginRouter);
+const middleware = require('../middleware/validateToken');
+
+router.use(middleware);
 router.use('/posts', postsRouter, likesRouter);
 router.use('/signup', signUpRouter);
 router.use('/comments', commentsRouter);

@@ -9,14 +9,16 @@ require('dotenv').config();
 const router = express.Router();
 
 router.use(cookieParser());
-const middleware = require('../middleware/validateToken');
+
 // 게시글 작성
-router.post('/', middleware, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { title, content } = req.body;
     const { Authorization } = req.cookies;
+    // res.locals.user ??
+    // console.log(res.locals.user);
 
-    console.log(Authorization);
+    // console.log(res.locals.Authorization);
 
     if (!req.body) {
       return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
@@ -38,7 +40,8 @@ router.post('/', middleware, async (req, res) => {
 
     await Post.create({ userId, title, content });
     return res.status(201).json({ message: '게시글 작성에 성공하였습니다.' });
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(400).json({ message: '게시글 작성에 실패하였습니다.' });
   }
 });
@@ -58,9 +61,9 @@ router.get('/', async (req, res) => {
       ],
       attributes: ['postId', 'userId', 'title', 'createdAt', 'updatedAt'],
       order: [['createdAt', 'desc']],
-      row: true,
+      // row: true,
     });
-    console.log(JSON.parse(JSON.stringify(posts)));
+    // console.log(JSON.parse(JSON.stringify(posts)));
     // sql slect * from talble , table2,
     const postsData = JSON.parse(JSON.stringify(posts)).map((row) => ({
       postId: row.postId,

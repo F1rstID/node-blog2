@@ -18,7 +18,6 @@ const router = express.Router();
 require('dotenv').config();
 
 router.use(cookieParser());
-
 router.post('/', async (req, res) => {
   try {
     const { nickname, password } = req.body;

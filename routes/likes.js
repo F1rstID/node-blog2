@@ -1,13 +1,55 @@
 /* eslint-disable consistent-return */
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const { Post, Like } = require('../models');
+const jwt = require('jsonwebtoken');
+const { Post, Like, User } = require('../models');
 const { decodeJWT } = require('../modules/jwt');
 
 const router = express.Router();
 require('dotenv').config();
 
 router.use(cookieParser());
+
+router.get('/like', async (req, res) => {
+  const { Authorization } = req.cookies;
+  const [authType, authToken] = (Authorization || '').split(' ');
+  const { userId } = jwt.decode(authToken, process.env.JWTSECRETKEY);
+
+
+
+  const likes = await Like.findAll({
+    where: { userId },
+    include: [{
+      model: Post,
+      attributes: ['userId', 'postId', 'title', 'createdAt', 'updatedAt'],
+
+      include: [{
+        model: Like,
+        required: false,
+        attributes: ['userId'],
+      }]
+
+    }, {
+      model: User,
+      attributes: ['nickname'],
+    }],
+    order: [['createdAt', 'desc']],
+  })
+
+  const myLikedPosts = JSON.parse(JSON.stringify(likes)).map((row) => ({
+    postId: row.Post.postId,
+    userId: row.Post.userId,
+    nickname: row.User.nickname,
+    title: row.Post.title,
+    createdAt: new Date(row.Post.createdAt).toLocaleString('ko'),
+    updatedAt: new Date(row.Post.updatedAt).toLocaleString('ko'),
+    likes: row.Post.Likes.length,
+  }))
+
+
+  res.json({ data: myLikedPosts })
+
+})
 
 router.put('/:postId/like', async (req, res) => {
   const { postId } = req.params;

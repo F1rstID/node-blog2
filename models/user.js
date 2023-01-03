@@ -2,32 +2,35 @@ const Sequelize = require('sequelize');
 
 class User extends Sequelize.Model {
   static initiate(sequelize) {
-    User.init({
-      userId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
+    User.init(
+      {
+        userId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        nickname: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          unique: true,
+        },
+        password: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
       },
-      nickname: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-    }, {
-      sequelize,
-      timestamps: true,
-      underscored: false,
-      modelName: 'User',
-      tableName: 'users',
-      paranoid: false,
-      charset: 'utf8',
-      collate: 'utf8_general_ci',
-    });
+      {
+        sequelize,
+        timestamps: true,
+        underscored: false,
+        modelName: 'User',
+        tableName: 'users',
+        paranoid: false,
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
+      }
+    );
   }
 
   static associate(db) {

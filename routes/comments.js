@@ -17,13 +17,19 @@ router.post('/:postId', async (req, res) => {
     const { Authorization } = req.cookies;
 
     if (!Authorization) {
-      return res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '로그인이 필요한 기능입니다.' });
     }
     if (!verifyJWT(Authorization, process.env.JWTSECRETKEY)) {
-      return res.status(403).json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
     }
     if (!comment) {
-      return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
     }
 
     const user = await User.findByPk(decodeJWT(Authorization));
@@ -42,11 +48,13 @@ router.get('/:postId', async (req, res) => {
     const { postId } = req.params;
 
     const comment = await Comment.findAll({
-      include: [{
-        model: User,
-        attributes: ['nickname'],
-        required: true,
-      }],
+      include: [
+        {
+          model: User,
+          attributes: ['nickname'],
+          required: true,
+        },
+      ],
       where: { postId },
       attributes: ['commentId', 'userId', 'comment', 'createdAt', 'updatedAt'],
     });
@@ -72,21 +80,33 @@ router.put('/:commentId', async (req, res) => {
     const { comment } = req.body;
     const { Authorization } = req.cookies;
 
-    const commentData = await Comment.findOne({ where: { commentId: Number(commentId) } });
+    const commentData = await Comment.findOne({
+      where: { commentId: Number(commentId) },
+    });
     if (!comment) {
-      return res.status(404).json({ errorMessage: '댓글이 존재하지 않습니다.' });
+      return res
+        .status(404)
+        .json({ errorMessage: '댓글이 존재하지 않습니다.' });
     }
     if (!Authorization) {
-      return res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '로그인이 필요한 기능입니다.' });
     }
     if (!verifyJWT(Authorization, process.env.JWTSECRETKEY)) {
-      return res.status(403).json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
     }
     if (!req.body) {
-      return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
     }
     if (decodeJWT(Authorization) !== commentData.userId) {
-      return res.status(401).json({ errorMessage: '댓글이 정상적으로 수정되지 않았습니다.' });
+      return res
+        .status(401)
+        .json({ errorMessage: '댓글이 정상적으로 수정되지 않았습니다.' });
     }
     await Comment.update(
       {
@@ -94,12 +114,19 @@ router.put('/:commentId', async (req, res) => {
       },
       {
         where: { commentId },
-      },
-    ).then(() => res.status(200).json({ message: '댓글을 수정하였습니다.' }))
-      .catch(() => res.status(401).json({ errorMessage: '댓글이 정상적으로 수정되지 않았습니다.' }));
+      }
+    )
+      .then(() => res.status(200).json({ message: '댓글을 수정하였습니다.' }))
+      .catch(() =>
+        res
+          .status(401)
+          .json({ errorMessage: '댓글이 정상적으로 수정되지 않았습니다.' })
+      );
     // return true;
   } catch {
-    return res.status(400).json({ errorMessage: '댓글 수정에 실패하였습니다.' });
+    return res
+      .status(400)
+      .json({ errorMessage: '댓글 수정에 실패하였습니다.' });
   }
 });
 // 댓글 삭제
@@ -108,26 +135,43 @@ router.delete('/:commentId', async (req, res) => {
     const { commentId } = req.params;
     const { Authorization } = req.cookies;
 
-    const commentData = await Comment.findOne({ where: { commentId: Number(commentId) } });
+    const commentData = await Comment.findOne({
+      where: { commentId: Number(commentId) },
+    });
     if (!commentData) {
-      return res.status(404).json({ errorMessage: '댓글이 존재하지 않습니다.' });
+      return res
+        .status(404)
+        .json({ errorMessage: '댓글이 존재하지 않습니다.' });
     }
     if (!Authorization) {
-      return res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '로그인이 필요한 기능입니다.' });
     }
     if (!verifyJWT(Authorization, process.env.JWTSECRETKEY)) {
-      return res.status(403).json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.' });
     }
     if (decodeJWT(Authorization) !== commentData.userId) {
-      return res.status(401).json({ errorMessage: '댓글이 정상적으로 삭제되지 않았습니다.' });
+      return res
+        .status(401)
+        .json({ errorMessage: '댓글이 정상적으로 삭제되지 않았습니다.' });
     }
     await Comment.destroy({
       where: { commentId },
-    }).then(() => res.status(200).json({ message: '댓글을 삭제하였습니다.' }))
-      .catch(() => res.status(401).json({ errorMessage: '댓글이 정상적으로 삭제되지 않았습니다.' }));
+    })
+      .then(() => res.status(200).json({ message: '댓글을 삭제하였습니다.' }))
+      .catch(() =>
+        res
+          .status(401)
+          .json({ errorMessage: '댓글이 정상적으로 삭제되지 않았습니다.' })
+      );
     // return true;
   } catch {
-    return res.status(400).json({ errorMessage: '댓글 삭제에 실패하였습니다.' });
+    return res
+      .status(400)
+      .json({ errorMessage: '댓글 삭제에 실패하였습니다.' });
   }
 });
 module.exports = router;

@@ -71,19 +71,27 @@ router.post('/', async (req, res) => {
     }
 
     if (password !== confirm) {
-      return res.status(412).json({ errorMessage: '패스워드가 일치하지 않습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '패스워드가 일치하지 않습니다.' });
     }
 
     if (!isNickname(nickname)) {
-      return res.status(412).json({ errorMessage: '닉네임의 형식이 일치하지 않습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '닉네임의 형식이 일치하지 않습니다.' });
     }
 
     if (!isPassword) {
-      return res.status(412).json({ errorMessage: '패스워드 형식이 일치하지 않습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '패스워드 형식이 일치하지 않습니다.' });
     }
 
     if (!isIncludePasswordNickname(password, nickname)) {
-      return res.status(412).json({ errorMessage: '패스워드에 닉네임이 포함되어 있습니다.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '패스워드에 닉네임이 포함되어 있습니다.' });
     }
     const encryptedPassword = passwordEncryption(password);
     await User.create({
@@ -92,7 +100,9 @@ router.post('/', async (req, res) => {
     });
     return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
   } catch (e) {
-    return res.status(412).json({ errorMessage: '요청한 데이터 형식이 올바르지 않습니다.' });
+    return res
+      .status(412)
+      .json({ errorMessage: '요청한 데이터 형식이 올바르지 않습니다.' });
   }
 });
 

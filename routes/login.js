@@ -21,14 +21,19 @@ router.use(cookieParser());
 router.post('/', async (req, res) => {
   try {
     const { nickname, password } = req.body;
-    const user = await User.findOne({ where: { nickname } }) ?? false; // 존재하지 않는 닉네임 일경우 false를 반환
+    // 존재하지 않는 닉네임 일경우 false를 반환
+    const user = (await User.findOne({ where: { nickname } })) ?? false;
 
     if (!user) {
-      return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
     }
 
     if (!passwordVerification(password, user.password)) {
-      return res.status(412).json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
+      return res
+        .status(412)
+        .json({ errorMessage: '닉네임 또는 패스워드를 확인해주세요.' });
     }
 
     const token = createJWT(user.userId, process.env.JWTSECRETKEY, '10s');

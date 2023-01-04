@@ -222,7 +222,8 @@ router.delete('/:postId', async (req, res) => {
           .status(401)
           .json({ errorMessage: '게시글이 정상적으로 삭제되지 않았습니다.' })
       );
-  } catch {
+  } catch(err) {
+    console.log(err);
     return res
       .status(400)
       .json({ errorMessage: '게시글 삭제에 실패하였습니다.' });

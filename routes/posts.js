@@ -3,7 +3,6 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const { User, Post, Like } = require('../models');
 const { verifyJWT, decodeJWT } = require('../modules/jwt');
-const { parameterVerification } = require('../modules/parameter');
 require('dotenv').config();
 
 const router = express.Router();
@@ -193,11 +192,6 @@ router.delete('/:postId', async (req, res) => {
         .status(404)
         .json({ errorMessage: '게시글이 존재하지 않습니다.' });
     }
-    if (!parameterVerification(postId)) {
-      return res
-        .status(412)
-        .json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
-    }
     if (!Authorization) {
       return res
         .status(403)
@@ -222,7 +216,7 @@ router.delete('/:postId', async (req, res) => {
           .status(401)
           .json({ errorMessage: '게시글이 정상적으로 삭제되지 않았습니다.' })
       );
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return res
       .status(400)

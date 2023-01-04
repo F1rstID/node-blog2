@@ -1,19 +1,18 @@
 const express = require('express');
 const indexRouter = require('./routes');
-const { sequelize } = require('./models');
+// const { sequelize } = require('./models');
 const { swaggerUi, specs } = require('./modules/swagger');
 
 const app = express();
 const port = 3000;
-
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log('데이터베이스 연결 성공');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+// sequelize
+//   .sync({ force: false })
+//   .then(() => {
+//     console.log('Sync');
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
 
 app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

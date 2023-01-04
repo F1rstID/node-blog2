@@ -56,6 +56,9 @@ router.put('/:postId/like', async (req, res) => {
   const { Authorization } = req.cookies;
   const userId = decodeJWT(Authorization);
   const like = await Like.findOne({ where: { postId, userId } });
+
+  console.log(like)
+
   const post = await Post.findByPk(Number(postId));
   if (!post) {
     return res

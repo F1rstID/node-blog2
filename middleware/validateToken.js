@@ -16,6 +16,11 @@ function verifyJWT(token, secretKey) {
 
 module.exports = router.use(async (req, res, next) => {
   const { Authorization } = req.cookies;
+
+  if (!Authorization) {
+    res.status(403).json({ errorMessage: '토큰이 없음' });
+    return;
+  }
   // console.log(Authorization);
   const [authType, authToken] = (Authorization || '').split(' ');
 

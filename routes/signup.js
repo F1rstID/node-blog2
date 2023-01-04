@@ -54,7 +54,7 @@ function isIncludePasswordNickname(password, nickname) {
  * @returns 암호화된 비밀번호
  */
 function passwordEncryption(password) {
-  return bcrypt.hashSync(password, Number(process.env.SALT));
+  return bcrypt.hashSync(password, 10);
 }
 
 const router = express.Router();
@@ -100,6 +100,7 @@ router.post('/', async (req, res) => {
     });
     return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
   } catch (e) {
+    console.log(e);
     return res
       .status(412)
       .json({ errorMessage: '요청한 데이터 형식이 올바르지 않습니다.' });

@@ -15,26 +15,28 @@ router.get('/like', async (req, res) => {
   const [authType, authToken] = (Authorization || '').split(' ');
   const { userId } = jwt.decode(authToken, process.env.JWTSECRETKEY);
 
-
-
   const likes = await Like.findAll({
     where: { userId },
-    include: [{
-      model: Post,
-      attributes: ['userId', 'postId', 'title', 'createdAt', 'updatedAt'],
+    include: [
+      {
+        model: Post,
+        attributes: ['userId', 'postId', 'title', 'createdAt', 'updatedAt'],
 
-      include: [{
-        model: Like,
-        required: false,
-        attributes: ['userId'],
-      }]
-
-    }, {
-      model: User,
-      attributes: ['nickname'],
-    }],
+        include: [
+          {
+            model: Like,
+            required: false,
+            attributes: ['userId'],
+          },
+        ],
+      },
+      {
+        model: User,
+        attributes: ['nickname'],
+      },
+    ],
     order: [['createdAt', 'desc']],
-  })
+  });
 
   const myLikedPosts = JSON.parse(JSON.stringify(likes)).map((row) => ({
     postId: row.Post.postId,
@@ -44,12 +46,10 @@ router.get('/like', async (req, res) => {
     createdAt: new Date(row.Post.createdAt).toLocaleString('ko'),
     updatedAt: new Date(row.Post.updatedAt).toLocaleString('ko'),
     likes: row.Post.Likes.length,
-  }))
+  }));
 
-
-  res.json({ data: myLikedPosts })
-
-})
+  res.json({ data: myLikedPosts });
+});
 
 router.put('/:postId/like', async (req, res) => {
   const { postId } = req.params;
